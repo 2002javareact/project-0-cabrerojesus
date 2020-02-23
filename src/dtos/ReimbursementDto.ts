@@ -1,9 +1,11 @@
-export class Reimbursement{
-    reimbursementId: number // primary key
+import { Reimbursement } from '../models/Reimbursement'
+
+export class ReimbursementDto{
+    reimbursement_id: number // primary key
 	author: number  // foreign key -> User, not null
 	amount: number  // not null
-  dateSubmitted: number // not null
-  dateResolved: number // not null
+  date_submitted: number // not null
+  date_resolved: number // not null
   description: string // not null
   resolver: number // foreign key -> User
   status: number // foreign ey -> ReimbursementStatus, not null
@@ -12,11 +14,11 @@ export class Reimbursement{
     dateSubmited:number, dateResolved:number, description:string,
     resolver:number, status:number, type:number)
     {
-        this.reimbursementId = reimbursementId
+        this.reimbursement_id = reimbursementId
         this.author = author
         this.amount = amount
-        this.dateSubmitted = dateSubmited
-        this.dateResolved = dateResolved
+        this.date_submitted = dateSubmited
+        this.date_resolved = dateResolved
         this.description = description
         this.resolver = resolver
         this.status = status
