@@ -3,8 +3,7 @@ import { sessionMiddleware } from '../middleware/session-middleware';
 import { TokenExpiredError } from '../errors/TokenExpiredError';
 import { findByUsernameAndPassword, findByUserId, findAllUsers, updateUser } from '../services/user-service';
 import { loggingMiddleware } from '../middleware/loggin-middleware';
-import { Users } from '../models/Users';
-import { UserNotFoundError } from '../errors/UserNotFoundError'
+import { UserDto } from '../dtos/UserDto';
 
 
 export const userRouter = express.Router()
@@ -54,15 +53,14 @@ userRouter.use(loggingMiddleware)
   })
 
   //find and return user with the matching user id
-  userRouter.get('/:id',async (req,res)=>{
+  userRouter.get('/users/:id',async (req,res)=>{
     const {userId}=req.body
     if(isNaN(userId)){
       res.status(400).send('please enter a valid user Id.')
     }
     else{
       try{
-        if(req.session.user.role.role <= 2 || userId === req.session.user.userId){
-          
+        if(req.session.user.role.role <= 2 || userId === req.session.user.userId){          
             const user = await findByUserId(userId)
                     res.status(200).json(user)
         }
@@ -82,7 +80,7 @@ userRouter.use(loggingMiddleware)
       if(req.session.user.role.role === 1){
           const {userId,username,password,firstName,lastName,email,role} = req.body
             if(userId && username && password && firstName && lastName && email && role){
-                const user = await updateUser(userId,username,password,firstName,lastName,email,role)
+                const user = await updateUser(new UserDto(userId,username,password,firstName,lastName,email,role))
                 res.status(200).json(user)              
               }
             else{

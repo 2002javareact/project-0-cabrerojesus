@@ -1,5 +1,7 @@
 import { daoFindUByUsernameAndPassword, daoFindByUserId, daoFindAllUsers, daoUpdateUser } from "../repositories/user-dao"
 import { Users } from "../models/Users"
+import {UserDtoToUser } from "../Util/user-dto-to-user"
+import { UserDto } from "../dtos/UserDto"
 
 //this function returns a user object if credentials are valid
   //otherwise it will throw an error
@@ -19,6 +21,6 @@ import { Users } from "../models/Users"
     return await daoFindAllUsers()
  }
 
-export async function updateUser(userId:number,username:string,password:string,firstName:string,lastName:string,email:string,role:number):Promise<Users>{
-  return await daoUpdateUser(userId,username,password,firstName,lastName,email,role)
+export async function updateUser(user:UserDto):Promise<Users>{
+  return await daoUpdateUser(user)
 }

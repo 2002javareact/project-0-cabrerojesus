@@ -3,9 +3,9 @@ import { connectionPool } from ".";
 import { BadCredentialsError } from "../errors/BadCredentialsError";
 import { InternalServiceError } from "../errors/InternalServiceError"
 import { UserDtoToUser } from "../Util/user-dto-to-user";
-import { Users } from "../models/Users";
-import { findByUserId } from "../services/user-service";
 import { UserNotFoundError } from "../errors/UserNotFoundError";
+import { UserDto } from "../dtos/UserDto"
+import { Users } from "../models/Users";
 
 //functions for logging in
 export async function daoFindUByUsernameAndPassword(username,password):Promise<Users>{
@@ -17,7 +17,7 @@ export async function daoFindUByUsernameAndPassword(username,password):Promise<U
             return UserDtoToUser(results.rows[0])
         }
         else{
-            throw new Error("User Not Found")
+            throw new UserNotFoundError()
         }
     }
     catch(e){
@@ -44,12 +44,12 @@ export async function daoFindByUserId(userId):Promise<Users>{
             return UserDtoToUser(results.rows[0])
         }
         else{
-            throw new Error('User Not Found')
+            throw new UserNotFoundError()
         }
     }
     catch(e){
         if(e.message === 'User Not Found'){
-            throw new BadCredentialsError()
+            throw new UserNotFoundError()
         }
         else{
             throw new InternalServiceError()
@@ -77,12 +77,12 @@ export async function daoFindAllUsers():Promise<Users[]>{
 
 }
 
-export async function daoUpdateUser(userId,username,password,firstName,lastName,email,role):Promise<Users>{
+export async function daoUpdateUser(updatedUser:UserDto):Promise<Users>{
     let client:PoolClient
     try{
         client = await connectionPool.connect()
-        let update = await client.query(`UPDATE project0.users SET username = '${username}', "password"= '${password}', first_name = '${firstName}', last_name = '${lastName}', email = '${email}', role = '${role}' WHERE user_id = '${userId}'`)
-        let result = await client.query(`SELECT * FROM project0.users WHERE user_id = '${userId}'`)
+        await client.query(`UPDATE project0.users SET username = '${updatedUser.username}', "password"= '${updatedUser.password}', first_name = '${updatedUser.first_name}', last_name = '${updatedUser.last_name}', email = '${updatedUser.email}', role = '${updatedUser.role}' WHERE user_id = '${updatedUser.user_id}'`)
+        let result = await client.query(`SELECT * FROM project0.users WHERE user_id = '${updatedUser.user_id}'`)
         if(result.rowCount !== 0){
             return UserDtoToUser(result.rows[0])
         }
