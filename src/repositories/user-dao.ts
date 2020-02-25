@@ -39,7 +39,7 @@ export async function daoFindByUserId(userId):Promise<Users>{
     let client:PoolClient
     try{
          client = await connectionPool.connect()
-         let results = await client.query(`SELECT * FROM project0.users WHERE user_id = $1;`,[userId])
+         let results = await client.query(`SELECT * FROM project0.users inner join project0."role" on project0.users."role" = project0."role".role_id WHERE user_id = $1;`,[userId])
          if(results.rowCount !== 0){
             return UserDtoToUser(results.rows[0])
         }

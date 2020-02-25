@@ -17,8 +17,7 @@ try{
     if(req.session.user.role.roleId === 3){
            throw new TokenExpiredError()
     }
-    else{
-    
+    else{    
             const {statusId}=req.body
             if(statusId < 3 && statusId > 0){
             const reimbursement = await findReimbursementByStatus(statusId)
@@ -59,9 +58,9 @@ reimbursementRouter.get('/author/:userId',async (req,res)=>{
 //this function submits a new reimbursement
 reimbursementRouter.post('/',async (req,res)=>{
         try{
-            const{author,amount,dateSubmitted,description,type}=req.body
-            if(author && amount && dateSubmitted && description && type){
-                const reimbursement = await submitReimbursement(new ReimbursementDto(0,author,amount,dateSubmitted,dateSubmitted,description,null,3,type))
+            const{amount,dateSubmitted,description,type}=req.body
+            if(amount && dateSubmitted && description && type){
+                const reimbursement = await submitReimbursement(new ReimbursementDto(0,req.session.user.userId,amount,dateSubmitted,dateSubmitted,description,null,3,type))
                 res.status(201).json(reimbursement)
             }
             else{
