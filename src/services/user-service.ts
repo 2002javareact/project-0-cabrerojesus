@@ -6,13 +6,13 @@ import { UserDto } from "../dtos/UserDto"
 //this function returns a user object if credentials are valid
   //otherwise it will throw an error
   export async function findByUsernameAndPassword(username:string, password:string):Promise<Users>{
-      return daoFindUByUsernameAndPassword(username,password)
+      return await daoFindUByUsernameAndPassword(username,password)
   }
 
   //this function returns a user object if that matches the user id fed in
   //otherwise it will throw an error
   export async function findByUserId(userId:number){
-    return daoFindByUserId(userId)
+    return await daoFindByUserId(userId)
   }
 
   export async function findAllUsers():Promise<Users[]>{

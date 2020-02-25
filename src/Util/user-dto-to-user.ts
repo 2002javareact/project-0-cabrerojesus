@@ -9,5 +9,5 @@ export function UserDtoToUser(UserDtoToUser):Users{
         UserDtoToUser.first_name,
         UserDtoToUser.last_name,
         UserDtoToUser.email,
-        new Role(UserDtoToUser.roleId, UserDtoToUser.role)
+        new Role(UserDtoToUser.role_id, UserDtoToUser.role)
 )}

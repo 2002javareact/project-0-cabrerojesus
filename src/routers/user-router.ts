@@ -4,6 +4,7 @@ import { TokenExpiredError } from '../errors/TokenExpiredError';
 import { findByUsernameAndPassword, findByUserId, findAllUsers, updateUser } from '../services/user-service';
 import { loggingMiddleware } from '../middleware/loggin-middleware';
 import { UserDto } from '../dtos/UserDto';
+import { Role } from '../models/Role';
 
 
 export const userRouter = express.Router()
@@ -37,9 +38,9 @@ userRouter.use(loggingMiddleware)
   //only permissable to financial manager roles
   //if user is financial manager will return all users
   //else will send error 
-  userRouter.get('/users',async (req,res)=>{
+  userRouter.get('/',async (req,res)=>{
     try{
-      if(req.session.user.role.role > 2){
+      if(req.session.user.role.roleId > 2){
           throw new TokenExpiredError()
       }
       else{
@@ -53,14 +54,14 @@ userRouter.use(loggingMiddleware)
   })
 
   //find and return user with the matching user id
-  userRouter.get('/users/:id',async (req,res)=>{
+  userRouter.get('/:id',async (req,res)=>{
     const {userId}=req.body
     if(isNaN(userId)){
-      res.status(400).send('please enter a valid user Id.')
+      res.status(400).send('Please enter a valid user Id.')
     }
     else{
       try{
-        if(req.session.user.role.role <= 2 || userId === req.session.user.userId){          
+        if(req.session.user.role.roleId <= 2 || userId === req.session.user.userId){          
             const user = await findByUserId(userId)
                     res.status(200).json(user)
         }
@@ -75,16 +76,16 @@ userRouter.use(loggingMiddleware)
 })
   
   //this function will update a user object
-  userRouter.patch('/users',async (req,res)=>{
+  userRouter.patch('/',async (req,res)=>{
     try{
-      if(req.session.user.role.role === 1){
+      if(req.session.user.role.roleId === 1){
           const {userId,username,password,firstName,lastName,email,role} = req.body
-            if(userId && username && password && firstName && lastName && email && role){
-                const user = await updateUser(new UserDto(userId,username,password,firstName,lastName,email,role))
-                res.status(200).json(user)              
-              }
+            if(findByUserId(userId)){
+                let user = await updateUser(new UserDto(userId,username,password,firstName,lastName,email,role))
+                res.status(200).json(user)                
+            }
             else{
-              res.status(400).send('Please include all fields.')
+              res.status(400).send('Please include a valid user Id.')
             }
           }
           else{

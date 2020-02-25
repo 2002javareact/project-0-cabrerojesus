@@ -6,13 +6,15 @@ import { UserDtoToUser } from "../Util/user-dto-to-user";
 import { UserNotFoundError } from "../errors/UserNotFoundError";
 import { UserDto } from "../dtos/UserDto"
 import { Users } from "../models/Users";
+import { ReimbursementDtoToReimbursement } from "../Util/reimbursement-to-reimbursementdto";
 
 //functions for logging in
 export async function daoFindUByUsernameAndPassword(username,password):Promise<Users>{
     let client:PoolClient//out potential connection for db
     try{
         client = await connectionPool.connect()
-        let results = await client.query(`SELECT * FROM project0.users WHERE username = '${username}' and "password" = '${password}'`)
+        let results = await client.query(`SELECT * FROM project0.users inner join project0."role" on project0.users."role" = project0."role".role_id
+        where username = $1 and "password"= $2;`,[username,password])
         if(results.rowCount !== 0){
             return UserDtoToUser(results.rows[0])
         }
@@ -38,9 +40,8 @@ export async function daoFindByUserId(userId):Promise<Users>{
     let client:PoolClient
     try{
          client = await connectionPool.connect()
-         let results = await client.query(`SELECT * FROM project0.users WHERE user_Id = '${userId}'`)
-         if(results.rowCount !== 0)
-        {
+         let results = await client.query(`SELECT * FROM project0.users WHERE user_id = $1;`,[userId])
+         if(results.rowCount !== 0){
             return UserDtoToUser(results.rows[0])
         }
         else{
@@ -48,6 +49,7 @@ export async function daoFindByUserId(userId):Promise<Users>{
         }
     }
     catch(e){
+        console.log(e)
         if(e.message === 'User Not Found'){
             throw new UserNotFoundError()
         }
@@ -80,11 +82,21 @@ export async function daoFindAllUsers():Promise<Users[]>{
 export async function daoUpdateUser(updatedUser:UserDto):Promise<Users>{
     let client:PoolClient
     try{
-        client = await connectionPool.connect()
-        await client.query(`UPDATE project0.users SET username = '${updatedUser.username}', "password"= '${updatedUser.password}', first_name = '${updatedUser.first_name}', last_name = '${updatedUser.last_name}', email = '${updatedUser.email}', role = '${updatedUser.role}' WHERE user_id = '${updatedUser.user_id}'`)
-        let result = await client.query(`SELECT * FROM project0.users WHERE user_id = '${updatedUser.user_id}'`)
-        if(result.rowCount !== 0){
-            return UserDtoToUser(result.rows[0])
+            client = await connectionPool.connect()
+            let user = await client.query(`SELECT * FROM project0.users WHERE user_id = $1;`,[updatedUser.user_id])
+
+            updatedUser.username = updatedUser.username || user.rows[0].username
+            updatedUser.password = updatedUser.password || user.rows[0].password
+            updatedUser.first_name = updatedUser.first_name || user.rows[0].first_name
+            updatedUser.last_name = updatedUser.last_name || user.rows[0].last_name
+            updatedUser.email = updatedUser.email || user.rows[0].email
+            updatedUser.role = updatedUser.role || user.rows[0].role
+
+
+            await client.query(`UPDATE project0.users SET username = $1, "password" = $2, first_name = $3, last_name = $4, email = $5, "role" = $6 WHERE user_id = $7;`,[updatedUser.username,updatedUser.password,updatedUser.first_name,updatedUser.last_name,updatedUser.email,updatedUser.role,updatedUser.user_id])
+            let result = await client.query(`SELECT * FROM project0.users inner join project0."role" on project0.users."role" = project0."role".role_id WHERE user_id = $1;`,[updatedUser.user_id])
+            if(result.rowCount !== 0){
+                return UserDtoToUser(result.rows[0])
         }
         else{
             throw new UserNotFoundError()
