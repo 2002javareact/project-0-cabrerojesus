@@ -11,6 +11,7 @@ reimbursementRouter.use(sessionMiddleware)
 
 reimbursementRouter.use(loggingMiddleware)
 
+//this function searches reimbursements by status id
 reimbursementRouter.get('/status/:statusId',async (req,res)=>{
 try{
     if(req.session.user.role.roleId === 3){
@@ -33,6 +34,7 @@ try{
         }
 })
 
+//this function searches by author
 reimbursementRouter.get('/author/:userId',async (req,res)=>{
     const{userId}=req.body
     try{
@@ -54,6 +56,7 @@ reimbursementRouter.get('/author/:userId',async (req,res)=>{
             }
 })
 
+//this function submits a new reimbursement
 reimbursementRouter.post('/',async (req,res)=>{
         try{
             const{author,amount,dateSubmitted,description,type}=req.body
@@ -70,6 +73,7 @@ reimbursementRouter.post('/',async (req,res)=>{
     }
 })
 
+//this function updates a reimbursement
 reimbursementRouter.patch('/users', async (req,res)=>{
     const {reimbursementId,author,amount,dateSubmitted,dateResolved,description,resolver,status,type}=req.body
     try{

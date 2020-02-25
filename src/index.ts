@@ -1,18 +1,14 @@
-
 import * as express from 'express';
 import  * as bodyParser from 'body-parser';
 import { userRouter } from './routers/user-router'
 import  { reimbursementRouter } from './routers/reimbursement-router'
-
-
-
 
 const app = express()  
 
 app.use('/', bodyParser.json())
 
 // this will register all http requests that match /users
-// and redirect them to the userRouter
+// and redirect them to the userRouter and the reimbursementRouter
 app.use('/users', userRouter)
 app.use('/reimbursements',reimbursementRouter)
 

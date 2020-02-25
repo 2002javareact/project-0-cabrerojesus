@@ -7,7 +7,7 @@ import { Reimbursement } from "../models/Reimbursement"
 import { ReimbursementNotFoundError } from "../errors/ReimbursementNotFoundError"
 
 
-
+//this function submits a new reimbursement
 export async function daoSubmitReimbursement(newReimbursement:ReimbursementDto):Promise<Reimbursement>{
     let client:PoolClient
     try{
@@ -26,6 +26,7 @@ export async function daoSubmitReimbursement(newReimbursement:ReimbursementDto):
     }
 }
 
+//this funciton updates a reimbursement
 export async function daoUpdateReimbursement(reimbursement:ReimbursementDto):Promise<Reimbursement>{
     let client:PoolClient
     try{
@@ -60,6 +61,7 @@ export async function daoUpdateReimbursement(reimbursement:ReimbursementDto):Pro
     }
 }
 
+//this function finds reimbursements by status id
 export async function daoFindByReimbursementStatus(status:number):Promise<Reimbursement[]>{
     let client:PoolClient
     try{
@@ -85,6 +87,7 @@ export async function daoFindByReimbursementStatus(status:number):Promise<Reimbu
     }
 }
 
+//this function finds reimbursements by author
 export async function daoFindByReimbursementAuthor(userId:number):Promise<Reimbursement[]>{
     let client:PoolClient
     try{

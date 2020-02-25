@@ -8,8 +8,6 @@ import { Role } from '../models/Role';
 
 
 export const userRouter = express.Router()
-
-//call the session middleware. 
 userRouter.use(sessionMiddleware)
 
 userRouter.use(loggingMiddleware)
@@ -63,7 +61,7 @@ userRouter.use(loggingMiddleware)
       try{
         if(req.session.user.role.roleId <= 2 || userId === req.session.user.userId){          
             const user = await findByUserId(userId)
-                    res.status(200).json(user)
+            res.status(200).json(user)
         }
       else{
         throw new TokenExpiredError()
@@ -91,11 +89,11 @@ userRouter.use(loggingMiddleware)
           else{
             throw new TokenExpiredError()
           }
-        }//end of try
+        }
         catch(e){
           res.status(e.status).send(e.message)
         }
-      })//end of function 
+      }) 
 
 
   

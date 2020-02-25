@@ -6,7 +6,6 @@ import { UserDtoToUser } from "../Util/user-dto-to-user";
 import { UserNotFoundError } from "../errors/UserNotFoundError";
 import { UserDto } from "../dtos/UserDto"
 import { Users } from "../models/Users";
-import { ReimbursementDtoToReimbursement } from "../Util/reimbursement-to-reimbursementdto";
 
 //functions for logging in
 export async function daoFindUByUsernameAndPassword(username,password):Promise<Users>{
@@ -78,7 +77,7 @@ export async function daoFindAllUsers():Promise<Users[]>{
     }
 
 }
-
+//this function updates a user
 export async function daoUpdateUser(updatedUser:UserDto):Promise<Users>{
     let client:PoolClient
     try{
