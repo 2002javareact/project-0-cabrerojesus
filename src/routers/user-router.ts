@@ -4,7 +4,7 @@ import { TokenExpiredError } from '../errors/TokenExpiredError';
 import { findByUsernameAndPassword, findByUserId, findAllUsers, updateUser } from '../services/user-service';
 import { loggingMiddleware } from '../middleware/loggin-middleware';
 import { UserDto } from '../dtos/UserDto';
-import { Role } from '../models/Role';
+
 
 
 export const userRouter = express.Router()
@@ -24,8 +24,8 @@ userRouter.use(loggingMiddleware)
     else {
         try {
               const user = await findByUsernameAndPassword(username, password)
-              req.session.user =  user
-              res.status(200).json(user)
+              req.session.user = user
+              res.status(200).json(user);
         } catch(e){
             res.status(e.status).send(e.message)
         }
@@ -37,44 +37,54 @@ userRouter.use(loggingMiddleware)
   //if user is financial manager will return all users
   //else will send error 
   userRouter.get('/',async (req,res)=>{
-    try{
-      if(req.session.user.role.roleId > 2){
-          throw new TokenExpiredError()
+    if(req.session.user){
+          try{
+            if(req.session.user.role.roleId > 2){
+                throw new TokenExpiredError()
+            }
+            else{
+              const users = await findAllUsers()
+              res.status(200).json(users)        
+            }
+        }//end of try
+        catch(e){
+          res.status(e.status).send(e.message)
+        }//end of catch
+      }else{
+        res.status(400).send('Please log in.')
       }
-      else{
-        const users = await findAllUsers()
-        res.status(200).json(users)        
-      }
-  }//end of try
-  catch(e){
-    res.status(e.status).send(e.message)
-  }//end of catch
   })
 
   //find and return user with the matching user id
   userRouter.get('/:id',async (req,res)=>{
-    const {userId}=req.body
-    if(isNaN(userId)){
-      res.status(400).send('Please enter a valid user Id.')
-    }
-    else{
-      try{
-        if(req.session.user.role.roleId <= 2 || userId === req.session.user.userId){          
-            const user = await findByUserId(userId)
-            res.status(200).json(user)
+    if(req.session.user){
+        const {userId}=req.body
+        if(isNaN(userId)){
+          res.status(400).send('Please enter a valid user Id.')
         }
-      else{
-        throw new TokenExpiredError()
+        else{
+          try{
+            if(req.session.user.role.roleId <= 2 || userId === req.session.user.userId){          
+                const user = await findByUserId(userId)
+                res.status(200).json(user)
+            }
+          else{
+            throw new TokenExpiredError()
+          }
+        }
+        catch(e){
+          res.status(e.status).send(e.message)
+        }
       }
     }
-    catch(e){
-      res.status(e.status).send(e.message)
-  }
+   else{
+         res.status(400).send('Please log in')
   }
 })
   
   //this function will update a user object
-  userRouter.patch('/',async (req,res)=>{
+ userRouter.patch('/',async (req,res)=>{
+  if(req.session.user){
     try{
       if(req.session.user.role.roleId === 1){
           const {userId,username,password,firstName,lastName,email,role} = req.body
@@ -93,7 +103,11 @@ userRouter.use(loggingMiddleware)
         catch(e){
           res.status(e.status).send(e.message)
         }
-      }) 
+      }
+      else{
+        res.status(400).send('Please log in')
+      }
+    }) 
 
 
   
