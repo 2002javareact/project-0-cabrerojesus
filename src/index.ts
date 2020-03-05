@@ -5,7 +5,9 @@ import  { reimbursementRouter } from './routers/reimbursement-router'
 
 const app = express()  
 
+app.use('./Cors/Cors-Filter')
 app.use('/', bodyParser.json())
+
 
 // this will register all http requests that match /users
 // and redirect them to the userRouter and the reimbursementRouter
