@@ -2,12 +2,13 @@ import * as express from 'express';
 import  * as bodyParser from 'body-parser';
 import { userRouter } from './routers/user-router'
 import  { reimbursementRouter } from './routers/reimbursement-router'
+import { CorsFilter } from './middleware/Cors-Filter';
 
 const app = express()  
 
-app.use('./Cors/Cors-Filter')
-app.use('/', bodyParser.json())
 
+app.use('/', bodyParser.json())
+app.use(CorsFilter)
 
 // this will register all http requests that match /users
 // and redirect them to the userRouter and the reimbursementRouter
