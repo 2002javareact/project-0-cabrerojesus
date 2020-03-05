@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 
-export function corsFilter(req:Request,res:Response,next){
+export function CorsFilter(req:Request,res:Response,next){
     res.header('Access-Control-Allow-Origin', `${req.headers.origin}`)//this is a hack, never do it in a real application
     res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept')
     res.header('Access-Control-Allow-Credentials', 'true')
