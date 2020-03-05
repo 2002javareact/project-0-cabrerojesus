@@ -2,7 +2,7 @@ import * as express from 'express';
 import  * as bodyParser from 'body-parser';
 import { userRouter } from './routers/user-router'
 import  { reimbursementRouter } from './routers/reimbursement-router'
-import {  CorsFilter } from './middleware/Cors-Filter';
+import {  CorsFilter } from './middleware/cors-filter';
 
 const app = express()  
 
