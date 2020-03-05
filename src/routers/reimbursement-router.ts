@@ -23,7 +23,7 @@ reimbursementRouter.get('/status/:statusId',async (req,res)=>{
             }
             else{    
                     const {statusId}=req.body
-                    if(!isNaN(statusId) &&statusId > 0 && statusId <= 3 ){
+                    if(!isNaN(statusId) &&statusId > 0 && statusId <= 3 ){  
                     const reimbursement = await findReimbursementByStatus(statusId)
                     res.status(200).json(reimbursement)
                     }
