@@ -1,5 +1,7 @@
 import { Request,Response,NextFunction } from "express";
 
+
+//this is to filter stuff 
 export function CorsFilter(req:Request,res:Response,next:NextFunction){
     res.header('Access-Control-Allow-Origin', `${req.headers.origin}`)
     res.header('Access-Control-Allow-Headers, Origin,Content','Content-Type,Accept')
