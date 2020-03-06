@@ -8,7 +8,7 @@ const app = express()
 
 
 app.use('/', bodyParser.json())
-//app.use(corsFilter)
+app.use(corsFilter)
 
 // this will register all http requests that match /users
 // and redirect them to the userRouter and the reimbursementRouter
