@@ -18,7 +18,7 @@ reimbursementRouter.get('/status/:statusId',async (req,res)=>{
     }
     else{
         try{
-            if(req.session.user.role.roleId === 3){
+            if(req.session.user.role.roleId > 2){
                 throw new TokenExpiredError()
             }
             else{    
