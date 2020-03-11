@@ -1,16 +1,11 @@
 import * as express from 'express';
 import { sessionMiddleware } from '../middleware/session-middleware';
-import { loggingMiddleware } from '../middleware/loggin-middleware';
 import { TokenExpiredError } from '../errors/TokenExpiredError';
 import { findReimbursementByStatus, findByReimbursementAuthor, submitReimbursement, updateReimbursement } from '../services/reimbursement-service'
 import { ReimbursementDto } from '../dtos/ReimbursementDto';
 
 export const reimbursementRouter = express.Router()
-
 reimbursementRouter.use(sessionMiddleware)
-
-reimbursementRouter.use(loggingMiddleware)
-
 //this function searches reimbursements by status id
 reimbursementRouter.get('/status/:statusId',async (req,res)=>{
     if(!req.session.user){

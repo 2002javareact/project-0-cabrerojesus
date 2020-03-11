@@ -2,11 +2,12 @@ import * as express from 'express'
 import { TokenExpiredError } from '../errors/TokenExpiredError';
 import { findByUserId, findAllUsers, updateUser } from '../services/user-service';
 import { UserDto } from '../dtos/UserDto';
+import { sessionMiddleware } from '../middleware/session-middleware';
 
 
 
 export const userRouter = express.Router()
-
+userRouter.use(sessionMiddleware)
 
   //find and return all users
   //only permissable to financial manager roles

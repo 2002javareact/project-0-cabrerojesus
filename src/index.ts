@@ -12,7 +12,6 @@ const app = express()
 
 app.use('/', bodyParser.json())
 app.use(corsFilter)
-app.use(sessionMiddleware)
 app.use(loggingMiddleware)
 
 // this will register all http requests that match /users
