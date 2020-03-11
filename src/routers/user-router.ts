@@ -1,6 +1,6 @@
 import * as express from 'express'
 import { TokenExpiredError } from '../errors/TokenExpiredError';
-import { findByUserId, findAllUsers, updateUser } from '../services/user-service';
+import { findByUserId, findAllUsers, updateUser, findByUsernameAndPassword } from '../services/user-service';
 import { UserDto } from '../dtos/UserDto';
 import { sessionMiddleware } from '../middleware/session-middleware';
 
@@ -8,6 +8,24 @@ import { sessionMiddleware } from '../middleware/session-middleware';
 
 export const userRouter = express.Router()
 userRouter.use(sessionMiddleware)
+
+userRouter.post ('/login', async (req,res)=>{
+  //step one, get data from user
+  const {username, password} = req.body
+  //step two, validate that data
+  if(!username || !password){
+      res.status(400).send('Please Include Username and Password')
+  } 
+  else {
+      try {
+            const user = await findByUsernameAndPassword(username, password)
+            req.session.user = user
+            res.status(200).json(user);
+      } catch(e){
+          res.status(e.status).send(e.message)
+      }
+  }
+})
 
   //find and return all users
   //only permissable to financial manager roles
