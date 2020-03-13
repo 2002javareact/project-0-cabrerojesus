@@ -51,9 +51,9 @@ userRouter.post ('/login', async (req,res)=>{
   })
 
   //find and return user with the matching user id
-  userRouter.get('/:id',async (req,res)=>{
+  userRouter.get(`/:userId`,async (req,res)=>{
     if(req.session.user){
-        const {userId}=req.body
+        const userId =+ req.params.userId
         if(isNaN(userId)){
           res.status(400).send('Please enter a valid user Id.')
         }
