@@ -17,7 +17,7 @@ reimbursementRouter.get('/status/:statusId',async (req,res)=>{
                 throw new TokenExpiredError()
             }
             else{    
-                    const statusId=+req.params
+                    const statusId=+req.params.statusId
                     if(!isNaN(statusId) &&statusId > 0 && statusId <= 3 ){  
                     const reimbursement = await findReimbursementByStatus(statusId)
                     res.status(200).json(reimbursement)
@@ -39,7 +39,7 @@ reimbursementRouter.get('/author/:userId',async (req,res)=>{
         res.status(401).send('Please log in.')
     }
     else{
-    const userId=+req.params
+    const userId=+req.params.userId
             try{
                 if(req.session.user.role.roleId > 2 && req.session.user.userId != userId){
                     throw new TokenExpiredError()
